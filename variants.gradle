@@ -1,0 +1,14 @@
+ext {
+    version = [major: 1,
+               minor: 0,
+               patch: 0]
+
+    demo = [appName      : 'Marvel Kotlin demo',
+            applicationId: "com.everis.android.marvelkotlin",
+
+            apiUrl       : "https://gateway.marvel.com/v1/",
+
+            privateKey   : "97b51487577e39179296e9cb2dccc9507198686c",
+            publicKey    : "585b45a00ec83ed8a2af91101942872e"
+    ]
+}

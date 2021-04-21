@@ -1,0 +1,35 @@
+apply from: 'dependencies.gradle'
+apply from: 'common_methods.gradle'
+apply from: 'variants.gradle'
+
+buildscript {
+    ext {
+        kotlin_version = '1.4.31'
+        gradle_plugin = '4.1.2'
+        arch_navigation = '2.2.0-rc04'
+    }
+
+    repositories {
+        google()
+        jcenter()
+        mavenCentral()
+    }
+
+    dependencies {
+        classpath "com.android.tools.build:gradle:$gradle_plugin"
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+        classpath "androidx.navigation:navigation-safe-args-gradle-plugin:$arch_navigation"
+    }
+}
+
+allprojects {
+    repositories {
+        google()
+        mavenCentral()
+        jcenter() // Warning: this repository is going to shut down soon
+    }
+}
+
+task clean(type: Delete) {
+    delete rootProject.buildDir
+}

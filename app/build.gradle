@@ -1,0 +1,124 @@
+plugins {
+    id 'com.android.application'
+    id 'kotlin-android'
+    id 'kotlin-parcelize'
+    id 'kotlin-kapt'
+    id 'androidx.navigation.safeargs.kotlin'
+}
+
+android {
+    compileSdkVersion androidSdk.compile
+
+    defaultConfig {
+        minSdkVersion androidSdk.min
+        targetSdkVersion androidSdk.target
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+    }
+
+    buildTypes {
+        debug {
+            debuggable true
+        }
+
+        release {
+            minifyEnabled true
+            shrinkResources true
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+
+    buildFeatures {
+        viewBinding = true
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+    kotlinOptions {
+        jvmTarget = '1.8'
+    }
+
+    testOptions {
+        unitTests {
+            returnDefaultValues = true
+            includeAndroidResources = true
+        }
+    }
+
+    lintOptions {
+        abortOnError false
+        ignoreWarnings false
+    }
+
+    productFlavors.whenObjectAdded { flavor ->
+        def version = rootProject.ext.version
+
+        flavor.versionCode generateAutoVersionCode()
+        flavor.versionName generateVersionName(version)
+    }
+
+    flavorDimensions "default"
+    productFlavors {
+        demo {
+            dimension "default"
+        }
+    }
+
+    project.android.applicationVariants.all { variant ->
+        variant.productFlavors.each { flavor ->
+            println("************ Gradle build configuration for -> " + flavor.name + " " + variant.buildType.name + " ************")
+            def flavorData = rootProject.ext[flavor.name]
+            def appName = flavorData.appName
+            println("versionCode=" + flavor.versionCode)
+            println("versionName=" + flavor.versionName)
+
+            def appId = getVariantFieldValue(flavorData.applicationId, variant.buildType.name)
+
+            if (variant.buildType.name != "release") {
+                if (variant.buildType.name == "debug") {
+                    //appId = appId + ".dev"
+                    appName = appName + "-DEV"
+                }
+                if (variant.buildType.name == "pre") {
+                    //appId = appId + ".pre"
+                    appName = appName + "-PRE"
+                }
+            }
+
+            setVariantApplicationId(variant, appId)
+            setVariantResValue(variant, appName, "app_name", STRING)
+            setVariantBuildConfigField(variant, flavorData.apiUrl, "API_URL", STRING)
+            setVariantBuildConfigField(variant, flavorData.privateKey, "PRIVATE_KEY", STRING)
+            setVariantBuildConfigField(variant, flavorData.publicKey, "PUBLIC_KEY", STRING)
+        }
+    }
+}
+
+dependencies {
+    implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
+    implementation "androidx.core:core-ktx:$versions.coreKtx"
+    implementation "androidx.appcompat:appcompat:$versions.appcompat"
+    implementation "com.google.android.material:material:$versions.materialDesign"
+    implementation "androidx.constraintlayout:constraintlayout:$versions.constraintLayout"
+
+    implementation "androidx.navigation:navigation-fragment-ktx:$versions.navigation"
+    implementation "androidx.navigation:navigation-ui-ktx:$versions.navigation"
+
+    implementation "org.koin:koin-androidx-viewmodel:$versions.koin"
+
+    implementation "io.coil-kt:coil:$versions.coil"
+
+    implementation "io.arrow-kt:arrow-core:$versions.arrow"
+
+    implementation "com.squareup.retrofit2:retrofit:$versions.retrofit"
+    implementation "com.squareup.retrofit2:converter-moshi:$versions.retrofit"
+    implementation "com.squareup.okhttp3:logging-interceptor:$versions.okhttp3"
+    implementation "com.squareup.moshi:moshi-kotlin:$versions.moshi"
+    kapt "com.squareup.moshi:moshi-kotlin-codegen:$versions.moshi"
+
+    testImplementation "org.junit.jupiter:junit-jupiter:$testVersions.junit5"
+    androidTestImplementation "androidx.test.espresso:espresso-core:$testVersions.espresso"
+    androidTestImplementation "androidx.test:runner:$testVersions.testRunner"
+    androidTestImplementation "androidx.test:rules:$testVersions.testRules"
+}
