@@ -4,4 +4,9 @@
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
     <color name="red">#FFEC1D24</color>
+
+    <color name="translucent_scrim_top">#26EC1D24</color>
+    <color name="translucent_scrim_top_center">#0CEC1D24</color>
+    <color name="translucent_scrim_bottom">#2AEC1D24</color>
+    <color name="translucent_scrim_bottom_center">#0DEC1D24</color>
 </resources>

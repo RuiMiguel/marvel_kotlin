@@ -5,8 +5,10 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.everis.android.marvelkotlin.R
 import com.everis.android.marvelkotlin.data.network.error.NetworkFailure
 import com.everis.android.marvelkotlin.databinding.FragmentHomeBinding
 import com.everis.android.marvelkotlin.presentation.extension.hide
@@ -41,12 +43,16 @@ class HomeFragment : Fragment() {
     private fun initView() {
         charactersAdapter = CharacterAdapter(
             itemClick = { item ->
-
+                homeViewModel.selectCharacter(item)
             }
         )
 
         with(binding.charactersRecycler) {
             layoutManager = LinearLayoutManager(context, RecyclerView.VERTICAL, false)
+            addItemDecoration(
+                DividerItemDecoration(context, RecyclerView.VERTICAL).apply {
+                    setDrawable(resources.getDrawable(R.drawable.separator, null))
+                })
             adapter = charactersAdapter
             addOnScrollListener(object : RecyclerView.OnScrollListener() {
                 override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
@@ -57,12 +63,6 @@ class HomeFragment : Fragment() {
                 }
             })
         }
-
-        /*
-        binding.swipeToRefresh.setOnRefreshListener {
-            mainViewModel.requestAllCharacters()
-        }
-        */
     }
 
     private fun initViewModel() {
@@ -74,7 +74,10 @@ class HomeFragment : Fragment() {
                         progressBar.hide()
                     }
                     result.data?.let {
-                        charactersAdapter?.submitList(it)
+                        charactersAdapter?.run {
+                            submitList(it)
+                            notifyDataSetChanged()
+                        }
                     }
                 }
                 is Result.Error -> {

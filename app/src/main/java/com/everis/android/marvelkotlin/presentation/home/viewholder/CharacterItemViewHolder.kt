@@ -30,7 +30,6 @@ class CharacterItemViewHolder(
             }
 
             name.text = value.name
-            description.text = value.description
         }
         itemView.setOnClickListener { itemClick(value) }
     }

@@ -8,6 +8,7 @@ import com.everis.android.marvelkotlin.presentation.navigation.AppNavigator
 import com.everis.android.marvelkotlin.presentation.viewmodel.BaseViewModel
 import com.everis.android.marvelkotlin.presentation.viewmodel.Result
 import kotlinx.coroutines.CoroutineDispatcher
+import okhttp3.internal.notifyAll
 
 class HomeViewModel constructor(
     dispatcher: CoroutineDispatcher,
@@ -18,6 +19,8 @@ class HomeViewModel constructor(
     private var currentLimit = 50
     private var currentOffset = 0
 
+    private var _charactersBackup: MutableList<Character> = mutableListOf()
+
     private var _characters = MutableLiveData<Result<List<Character>?>>()
     val characters: LiveData<Result<List<Character>?>>
         get() = _characters
@@ -26,7 +29,7 @@ class HomeViewModel constructor(
         requestAllCharacters()
     }
 
-    fun requestAllCharacters() {
+    private fun requestAllCharacters() {
         launch {
             _characters.postValue(Result.Loading())
 
@@ -37,6 +40,7 @@ class HomeViewModel constructor(
                     _characters.postValue(Result.Error(it))
                 },
                 {
+                    _charactersBackup.addAll(it)
                     _characters.postValue(Result.Success(it))
                 }
             )
@@ -56,15 +60,14 @@ class HomeViewModel constructor(
                     _characters.postValue(Result.Error(it))
                 },
                 {
-                    var localCharacters = when (val list = _characters.value) {
-                        is Result.Success -> {
-                            list.data?.toMutableList()?.apply { addAll(it) } ?: it
-                        }
-                        else -> it
-                    }
-                    _characters.postValue(Result.Success(localCharacters))
+                    _charactersBackup.addAll(it)
+                    _characters.postValue(Result.Success(_charactersBackup))
                 }
             )
         }
+    }
+
+    fun selectCharacter(character: Character) {
+        appNavigator.goToDetail(character.id)
     }
 }

@@ -12,7 +12,12 @@
         tools:layout="@layout/fragment_home">
         <action
             android:id="@+id/action_to_screen_detail"
-            app:destination="@id/screen_detail" />
+            app:destination="@id/screen_detail">
+            <argument
+                android:name="characterId"
+                app:argType="integer"
+                app:nullable="false"/>
+        </action>
     </fragment>
 
     <fragment
@@ -20,5 +25,9 @@
         android:name="com.everis.android.marvelkotlin.presentation.detail.DetailFragment"
         android:label="@string/detail"
         tools:layout="@layout/fragment_detail">
+        <argument
+            android:name="characterId"
+            app:argType="integer"
+            app:nullable="false"/>
     </fragment>
 </navigation>
