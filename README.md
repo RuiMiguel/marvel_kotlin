@@ -1,6 +1,6 @@
 # marvel_kotlin
 
-#Arquitectura
+# Arquitectura
 Arquitectura clean. Proyecto estructurado en un solo módulo `app` con las capas diferenciadas en packages.
 En función del tamaño/complejidad del proyectos las capas pueden separarse en módulos o incluso los módulos por funcionalidad
 para proyectos mucho más complejos.
@@ -47,7 +47,7 @@ Evitamos así el bifurcar o la utilización de callbacks para controlar los fluj
         poder registrar las trazas en producción en un crashlytics
     * Repository: implementación de los interfaces de dominio.
     
-#Gradle
+# Gradle
 Para automatizar las builds y cambios de entorno, se añaden una serie de métodos y buenas prácticas de Gradle para automatizar las 
 las construcciones y la configuración de cada entorno. En `variants` se recogen las variantes de url, credenciales, etc
 necesarias en cada entorno, y se añaden al `BuildConfig` o `res` para que la aplicación las utilice facilmente
